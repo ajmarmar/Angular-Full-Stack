@@ -7,15 +7,23 @@ import * as path from 'path';
 import * as compress from 'compression';
 import * as cors from 'cors'
 import * as helmet from 'helmet';
+import * as multer from 'multer';
+import * as serveStatic from 'serve-static';
 import setRoutes from './routes';
 
 const app = express();
+
 dotenv.load({ path: '.env' });
+
+const upload = multer({ dest: process.env.UPLOAD_DIR || 'uploads/' })
 app.set('port', (process.env.PORT || 3000));
 
-app.use('/', express.static(path.join(__dirname, '../public')));
+//http://expressjs.com/es/guide/migrating-4.html
+//app.use('/', express.static(path.join(__dirname, '../public')));
+app.use(serveStatic(path.join(__dirname, '../public')))
+
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(compress());
 app.use(helmet());
