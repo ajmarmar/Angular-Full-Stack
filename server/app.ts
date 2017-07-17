@@ -4,7 +4,9 @@ import * as express from 'express';
 import * as morgan from 'morgan';
 import * as mongoose from 'mongoose';
 import * as path from 'path';
-
+import * as compress from 'compression';
+import * as cors from 'cors'
+import * as helmet from 'helmet';
 import setRoutes from './routes';
 
 const app = express();
@@ -15,8 +17,12 @@ app.use('/', express.static(path.join(__dirname, '../public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use(compress());
+app.use(helmet());
+app.use(cors());
+
 app.use(morgan('dev'));
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI,{useMongoClient:true});
 const db = mongoose.connection;
 (<any>mongoose).Promise = global.Promise;
 
