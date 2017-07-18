@@ -20,6 +20,8 @@ const envVarsSchema = Joi.object({
     }),
   SECRET_TOKEN: Joi.string().required()
     .description('JWT Secret required to sign'),
+  JWT_TOKEN_EXPIRATION_TIME: Joi.string()
+    .default('1h'),
   MONGODB_URI: Joi.string().required()
     .description('Mongo DB host url'),
   UPLOAD_DIR: Joi.string().default('uploads/'),
@@ -36,6 +38,7 @@ const config = {
   port: envVars.PORT,
   mongooseDebug: envVars.MONGOOSE_DEBUG,
   jwtSecret: envVars.SECRET_TOKEN,
+  jwtTimeExpiration: envVars.JWT_TOKEN_EXPIRATION_TIME,
   mongo: {
     connection: envVars.MONGODB_URI,
   },
