@@ -33,8 +33,6 @@ export default function setRoutes(app) {
   // Apply the routes to our application with the prefix /api
   app.use('/api', routeNoSecure);
   app.use('/api', routeSecure);
-
-
 }
 
 function validateJWT (req,res,next){
@@ -45,7 +43,6 @@ function validateJWT (req,res,next){
       if (token){
         jwt.verify(token, process.env.SECRET_TOKEN, function(err, decode){
           if (err){
-            console.log(err);
             res.status(403).json({code: 403, message: 'Invalid Token'});
           }else{
             req.decode=decode;

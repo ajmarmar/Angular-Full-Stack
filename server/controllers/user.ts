@@ -13,7 +13,7 @@ export default class UserCtrl extends BaseCtrl {
       user.comparePassword(req.body.password, (error, isMatch) => {
         if (!isMatch) { return res.status(403).json({code:403, message:'User or password is incorrect'}); }
         const token = jwt.sign({ user: user }, process.env.SECRET_TOKEN, {
-          expiresIn: process.env.JWT_TOKEN_EXPIRATION_TIME || '30m'
+          expiresIn: process.env.JWT_TOKEN_EXPIRATION_TIME || '1h'
         });
         res.status(200).json({ token: token, user: user });
       });
@@ -23,5 +23,6 @@ export default class UserCtrl extends BaseCtrl {
   logout =(req, res) => {
     //TODO invalidate jwt token and redirect to '/'
   };
-
+280774
+477082
 }
