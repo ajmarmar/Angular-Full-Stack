@@ -20,7 +20,7 @@ app.set('port', (process.env.PORT || 3000));
 
 //http://expressjs.com/es/guide/migrating-4.html
 //app.use('/', express.static(path.join(__dirname, '../public')));
-app.use(serveStatic(path.join(__dirname, '../public')))
+app.use(serveStatic(path.join(__dirname, '../public')));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -30,6 +30,7 @@ app.use(helmet());
 app.use(cors());
 
 app.use(morgan('dev'));
+
 mongoose.connect(process.env.MONGODB_URI,{useMongoClient:true});
 const db = mongoose.connection;
 (<any>mongoose).Promise = global.Promise;

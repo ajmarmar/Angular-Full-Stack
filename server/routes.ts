@@ -1,35 +1,61 @@
 import * as express from 'express';
-
+import * as jwt from 'jsonwebtoken';
 import CatCtrl from './controllers/cat';
 import UserCtrl from './controllers/user';
 import Cat from './models/cat';
 import User from './models/user';
 
 export default function setRoutes(app) {
-
-  const router = express.Router();
+  const routeNoSecure = express.Router();
+  const routeSecure = express.Router();
 
   const catCtrl = new CatCtrl();
   const userCtrl = new UserCtrl();
 
   // Cats
-  router.route('/cats').get(catCtrl.getAll);
-  router.route('/cats/count').get(catCtrl.count);
-  router.route('/cat').post(catCtrl.insert);
-  router.route('/cat/:id').get(catCtrl.get);
-  router.route('/cat/:id').put(catCtrl.update);
-  router.route('/cat/:id').delete(catCtrl.delete);
+  routeSecure.use(validateJWT);
+  routeSecure.route('/cats').get(catCtrl.getAll);
+  routeSecure.route('/cats/count').get(catCtrl.count);
+  routeSecure.route('/cat').post(catCtrl.insert);
+  routeSecure.route('/cat/:id').get(catCtrl.get);
+  routeSecure.route('/cat/:id').put(catCtrl.update);
+  routeSecure.route('/cat/:id').delete(catCtrl.delete);
 
   // Users
-  router.route('/login').post(userCtrl.login);
-  router.route('/users').get(userCtrl.getAll);
-  router.route('/users/count').get(userCtrl.count);
-  router.route('/user').post(userCtrl.insert);
-  router.route('/user/:id').get(userCtrl.get);
-  router.route('/user/:id').put(userCtrl.update);
-  router.route('/user/:id').delete(userCtrl.delete);
+  routeNoSecure.route('/login').post(userCtrl.login);
+  routeSecure.route('/users').get(userCtrl.getAll);
+  routeSecure.route('/users/count').get(userCtrl.count);
+  routeSecure.route('/user').post(userCtrl.insert);
+  routeSecure.route('/user/:id').get(userCtrl.get);
+  routeSecure.route('/user/:id').put(userCtrl.update);
+  routeSecure.route('/user/:id').delete(userCtrl.delete);
 
   // Apply the routes to our application with the prefix /api
-  app.use('/api', router);
+  app.use('/api', routeNoSecure);
+  app.use('/api', routeSecure);
 
+
+}
+
+function validateJWT (req,res,next){
+  //var token = req.body.token || req.headers.authorization;
+  var bearerHeader = req.headers.authorization;
+  if (typeof bearerHeader !== 'undefined') {
+      var token = bearerHeader.split(" ")[1];
+      if (token){
+        jwt.verify(token, process.env.SECRET_TOKEN, function(err, decode){
+          if (err){
+            console.log(err);
+            res.status(403).json({code: 403, message: 'Invalid Token'});
+          }else{
+            req.decode=decode;
+            next();
+          }
+        });
+      } else {
+        res.status(403).json({code: 403, message: 'Invalid Token'});
+      }
+    } else {
+      res.status(403).json({code: 403, message: 'Invalid Token'});
+    }
 }
