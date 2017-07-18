@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
+import config from './config/config';
 import CatCtrl from './controllers/cat';
 import UserCtrl from './controllers/user';
 import Cat from './models/cat';
@@ -41,7 +42,7 @@ function validateJWT (req,res,next){
   if (typeof bearerHeader !== 'undefined') {
       var token = bearerHeader.split(" ")[1];
       if (token){
-        jwt.verify(token, process.env.SECRET_TOKEN, function(err, decode){
+        jwt.verify(token, config.jwtSecret, function(err, decode){
           if (err){
             res.status(403).json({code: 403, message: 'Invalid Token'});
           }else{

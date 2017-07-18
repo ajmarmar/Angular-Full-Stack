@@ -1,5 +1,5 @@
 import * as bodyParser from 'body-parser';
-import * as dotenv from 'dotenv';
+//import * as dotenv from 'dotenv';
 import * as express from 'express';
 import * as morgan from 'morgan';
 import * as mongoose from 'mongoose';
@@ -9,14 +9,15 @@ import * as cors from 'cors'
 import * as helmet from 'helmet';
 import * as multer from 'multer';
 import * as serveStatic from 'serve-static';
+import * as util from 'util';
 import setRoutes from './routes';
+import config from './config/config';
 
 const app = express();
+//dotenv.load({ path: '.env' });
 
-dotenv.load({ path: '.env' });
-
-const upload = multer({ dest: process.env.UPLOAD_DIR || 'uploads/' })
-app.set('port', (process.env.PORT || 3000));
+const upload = multer({ dest: config.uploadDirectory })
+app.set('port', config.port);
 
 //http://expressjs.com/es/guide/migrating-4.html
 //app.use('/', express.static(path.join(__dirname, '../public')));
@@ -29,9 +30,13 @@ app.use(compress());
 app.use(helmet());
 app.use(cors());
 
-app.use(morgan('dev'));
+if (config.env === 'development') {
+  app.use(morgan('dev'));
+} else {
+  app.use(morgan('short'));
+}
 
-mongoose.connect(process.env.MONGODB_URI,{useMongoClient:true});
+mongoose.connect(config.mongo.connection,{useMongoClient:true});
 const db = mongoose.connection;
 (<any>mongoose).Promise = global.Promise;
 
@@ -50,5 +55,11 @@ db.once('open', () => {
   });
 
 });
+
+if (config.mongooseDebug) {
+  mongoose.set('debug', (collectionName, method, query, doc) => {
+    console.log(`${collectionName}.${method}`, util.inspect(query, false, 20), doc);
+  });
+}
 
 export { app };
