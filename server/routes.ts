@@ -16,11 +16,14 @@ export default function setRoutes(app) {
   // Cats
   routeSecure.use(validateJWT);
   routeSecure.route('/cats').get(catCtrl.getAll);
+  routeSecure.route('/cats/:page/:limit/:sort').get(catCtrl.list);
   routeSecure.route('/cats/count').get(catCtrl.count);
   routeSecure.route('/cat').post(catCtrl.insert);
   routeSecure.route('/cat/:id').get(catCtrl.get);
   routeSecure.route('/cat/:id').put(catCtrl.update);
   routeSecure.route('/cat/:id').delete(catCtrl.delete);
+
+
 
   // Users
   routeNoSecure.route('/login').post(userCtrl.login);

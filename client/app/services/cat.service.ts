@@ -15,11 +15,11 @@ export class CatService {
   }
 
   getCats(): Observable<any> {
-    return this.http.get('/api/cats',this.baseHeaderHttp.getRequestOptions()).map(res => res.json());
+    return this.http.get('/api/cats', this.baseHeaderHttp.getRequestOptions()).map(res => res.json());
   }
 
   countCats(): Observable<any> {
-    return this.http.get('/api/cats/count',this.baseHeaderHttp.getRequestOptions()).map(res => res.json());
+    return this.http.get('/api/cats/count', this.baseHeaderHttp.getRequestOptions()).map(res => res.json());
   }
 
   addCat(cat): Observable<any> {
@@ -27,7 +27,7 @@ export class CatService {
   }
 
   getCat(cat): Observable<any> {
-    return this.http.get(`/api/cat/${cat._id}`,this.baseHeaderHttp.getRequestOptions()).map(res => res.json());
+    return this.http.get(`/api/cat/${cat._id}`, this.baseHeaderHttp.getRequestOptions()).map(res => res.json());
   }
 
   editCat(cat): Observable<any> {

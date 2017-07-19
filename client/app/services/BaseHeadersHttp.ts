@@ -3,7 +3,7 @@ import { Headers, RequestOptions } from '@angular/http';
 export class BaseHeadersHttp {
   constructor() {}
 
-  public getRequestOptions ():RequestOptions {
+  public getRequestOptions (): RequestOptions {
      const token = localStorage.getItem('token');
 
      const headers = new Headers({ 'Content-Type': 'application/json',

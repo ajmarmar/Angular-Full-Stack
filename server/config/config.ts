@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 import * as Joi from 'joi';
 
 // require and configure dotenv, will load vars in .env in PROCESS.ENV
-//require('dotenv').config();
+// require('dotenv').config();
 dotenv.load({ path: '.env' });
 
 // define validation for all the env vars
@@ -44,6 +44,6 @@ const config = {
   },
   uploadDirectory: envVars.UPLOAD_DIR
 };
-//console.log('ocnfig: '+config);
+// console.log('ocnfig: '+config);
 
 export default config;

@@ -10,6 +10,7 @@ import * as helmet from 'helmet';
 import * as multer from 'multer';
 import * as serveStatic from 'serve-static';
 import * as util from 'util';
+import * as Promise from 'bluebird';
 import setRoutes from './routes';
 import config from './config/config';
 
@@ -38,7 +39,8 @@ if (config.env === 'development') {
 
 mongoose.connect(config.mongo.connection,{useMongoClient:true});
 const db = mongoose.connection;
-(<any>mongoose).Promise = global.Promise;
+//(<any>mongoose).Promise = global.Promise;
+(<any>mongoose).Promise = Promise;
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
