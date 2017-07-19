@@ -13,8 +13,9 @@ export default function setRoutes(app) {
   const catCtrl = new CatCtrl();
   const userCtrl = new UserCtrl();
 
-  // Cats
   routeSecure.use(validateJWT);
+
+// Cats
   routeSecure.route('/cats').get(catCtrl.getAll);
   routeSecure.route('/cats/:page/:limit/:sort').get(catCtrl.list);
   routeSecure.route('/cats/count').get(catCtrl.count);
@@ -23,7 +24,7 @@ export default function setRoutes(app) {
   routeSecure.route('/cat/:id').put(catCtrl.update);
   routeSecure.route('/cat/:id').delete(catCtrl.delete);
 
-  // Users
+// Users
   routeNoSecure.route('/login').post(userCtrl.login);
   routeNoSecure.route('/user/register').post(userCtrl.insert);
   routeNoSecure.route('/logout').post(userCtrl.logout);
