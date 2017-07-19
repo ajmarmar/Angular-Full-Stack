@@ -23,17 +23,11 @@ export default function setRoutes(app) {
   routeSecure.route('/cat/:id').put(catCtrl.update);
   routeSecure.route('/cat/:id').delete(catCtrl.delete);
 
-
-
   // Users
   routeNoSecure.route('/login').post(userCtrl.login);
   routeNoSecure.route('/user/register').post(userCtrl.insert);
-<<<<<<< HEAD
-  
-  routeSecure.route('/logout').post(userCtrl.logout);
-=======
   routeNoSecure.route('/logout').post(userCtrl.logout);
->>>>>>> develop
+
   routeSecure.route('/users').get(userCtrl.getAll);
   routeSecure.route('/users/:page/:limit/:sort').get(userCtrl.list);
   routeSecure.route('/users/count').get(userCtrl.count);
