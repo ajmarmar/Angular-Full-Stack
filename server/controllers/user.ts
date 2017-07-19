@@ -15,14 +15,14 @@ export default class UserCtrl extends BaseCtrl {
         const token = jwt.sign({ user: user }, config.jwtSecret, {
           expiresIn: process.env.JWT_TOKEN_EXPIRATION_TIME || '1h'
         });
-        res.status(200).json({ token: token, user: user });
+        res.status(200).json({ token: token});
       });
     });
   };
 
   logout =(req, res) => {
     //TODO invalidate jwt token and redirect to '/'
+    console.log('Logout:'+req.decode);
+    res.status(200).json({code:200, message:'logout success'});
   };
-280774
-477082
 }

@@ -34,11 +34,15 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('token');
     this.loggedIn = false;
     this.isAdmin = false;
     this.currentUser = { _id: '', username: '', role: '' };
-    this.router.navigate(['/']);
+    this.userService.logout().subscribe(
+      () => {
+        localStorage.removeItem('token');
+        this.router.navigate(['/']);
+      }
+    );
   }
 
   decodeUserFromToken(token) {

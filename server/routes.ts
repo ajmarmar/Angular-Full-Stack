@@ -24,6 +24,8 @@ export default function setRoutes(app) {
 
   // Users
   routeNoSecure.route('/login').post(userCtrl.login);
+  routeNoSecure.route('/user/register').post(userCtrl.insert);
+  routeSecure.route('/logout').post(userCtrl.logout);
   routeSecure.route('/users').get(userCtrl.getAll);
   routeSecure.route('/users/count').get(userCtrl.count);
   routeSecure.route('/user').post(userCtrl.insert);
