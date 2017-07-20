@@ -10,8 +10,7 @@ const envVarsSchema = Joi.object({
   NODE_ENV: Joi.string()
     .allow(['development', 'production', 'test', 'provision'])
     .default('development'),
-  PORT: Joi.number()
-    .default(3000),
+  PORT: Joi.number().default(3000),
   MONGOOSE_DEBUG: Joi.boolean()
     .when('NODE_ENV', {
       is: Joi.string().equal('development'),
@@ -25,6 +24,7 @@ const envVarsSchema = Joi.object({
   MONGODB_URI: Joi.string().required()
     .description('Mongo DB host url'),
   UPLOAD_DIR: Joi.string().default('uploads/'),
+  MAX_FILE_SIZE: Joi.number().default(1048576)
 }).unknown()
   .required();
 
@@ -42,7 +42,8 @@ const config = {
   mongo: {
     connection: envVars.MONGODB_URI,
   },
-  uploadDirectory: envVars.UPLOAD_DIR
+  uploadDirectory: envVars.UPLOAD_DIR,
+  maxFileSize: envVars.MAX_FILE_SIZE
 };
 // console.log('ocnfig: '+config);
 

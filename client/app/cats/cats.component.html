@@ -3,69 +3,119 @@
 <app-toast [message]="toast.message"></app-toast>
 
 <div class="card" *ngIf="!isLoading">
-  <h4 class="card-header">Current cats ({{cats.length}})</h4>
-  <div class="card-block">
-    <table class="table table-bordered table-striped">
-      <thead class="thead-default">
-        <tr>
-          <th>Name</th>
-          <th>Age</th>
-          <th>Weight</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody *ngIf="cats.length === 0">
-        <tr>
-          <td colspan="4">There are no cats in the DB. Add a new cat below.</td>
-        </tr>  
-      </tbody>
-      <tbody *ngIf="!isEditing">
-        <tr *ngFor="let cat of cats">
-          <td>{{cat.name}}</td>
-          <td>{{cat.age}}</td>
-          <td>{{cat.weight}}</td>
-          <td>
-            <button class="btn btn-sm btn-warning" (click)="enableEditing(cat)"><i class="fa fa-pencil"></i> Edit</button> <button class="btn btn-sm btn-danger" (click)="deleteCat(cat)"><i class="fa fa-trash"></i> Delete</button>
-          </td>
-        </tr>  
-      </tbody>
-      <tbody *ngIf="isEditing">
-        <tr>
-          <td colspan="4">
-            <form class="form-inline" #form="ngForm" (ngSubmit)="editCat(cat)" style="display:inline">
-              <div class="form-group">
-                  <input class="form-control" type="text" name="name" [(ngModel)]="cat.name" placeholder="Name" required>
-              </div>
-              <div class="form-group">
-                <input class="form-control" type="number" name="age" [(ngModel)]="cat.age" placeholder="Age" min="0" required>
-              </div>
-              <div class="form-group">
-                <input class="form-control" type="number" name="weight" [(ngModel)]="cat.weight" placeholder="Weight" step="any" min="0" required>
-              </div>
-              <button class="btn btn-sm btn-primary" type="submit" [disabled]="!form.form.valid"><i class="fa fa-floppy-o"></i> Save</button>
-            </form>
-            <button class="btn btn-sm btn-warning" (click)="cancelEditing()"><i class="fa fa-times"></i> Cancel</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+  <h4 class="card-header">Current cats ({{cats.length}})
+    <button class="btn btn-sm btn-warning" (click)="enableAdd()" *ngIf="!isAdd && !isEditing"><i class="fa fa-plus-square-o"></i> Add</button></h4>
 
-<div class="card" *ngIf="!isEditing">
+  <div class="row" *ngIf="cats.length === 0">
+    <div class="col-lg-12">
+      <h3>There are no cats in the DB. Add a new cat below.</h3>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="cats.length !== 0 && !isAdd && !isEditing">
+		<div class="col-lg-2 cat-detail" *ngFor="let cat of cats">
+			<div class="thumbnail">
+				<div *ngIf="cat.image" class="imagen_container">
+					<img src="/api/file/{{cat.image}}" class="cat_imagen"/>
+				</div>
+				<div *ngIf="!cat.image" class="imagen_container">
+					<img class="cat_imagen" src="/assets/images/cat_default.jpg"/>
+				</div>
+				<div class="caption">
+					<h3>{{cat.name}}</h3>
+					<p><strong>Age:</strong> {{cat.age}} <br> <strong>Weight:</strong> {{cat.weight}}</p>
+					<div class="botones" >
+            <button class="btn btn-sm btn-warning" (click)="enableEditing(cat)"><i class="fa fa-pencil"></i> Edit</button> <button class="btn btn-sm btn-danger" (click)="deleteCat(cat)"><i class="fa fa-trash"></i> Delete</button>
+          </div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+  <div class="card" *ngIf="isEditing">
+    <h4 class="card-header">Edit cat</h4>
+    <div class="card-block">
+      <form #form="ngForm" (ngSubmit)="editCat(cat)" style="display:inline">
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label for="name" class="col-xs-4">Name</label>
+            <div class="col-xs-8">
+              <input class="form-control" type="text" name="name" [(ngModel)]="cat.name" placeholder="Name" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="age" class="col-xs-4">Age</label>
+            <div class="col-xs-8">
+              <input class="form-control" type="number" name="age" [(ngModel)]="cat.age" placeholder="Age" min="0" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="weight" class="col-xs-4">Weight</label>
+            <div class="col-xs-8">
+              <input class="form-control" type="number" name="weight" [(ngModel)]="cat.weight" placeholder="Weight" step="any" min="0" required>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="form-group">
+            <img class="img-responsive img-thumbnail"  width="200px" src="/api/file/{{cat.image}}" *ngIf="cat.image">
+            <img width="200px" class="img-responsive img-thumbnail" src="assets/images/cat_default.jpg" *ngIf="!cat.image">
+          </div>
+          <div class="form-group">
+            <label for="imageCatEdit" class="control-label col-xs-2">Image</label>
+            <div class="col-xs-10">
+              <input type="file" class="form-control" name="imageCatEdit" ng2FileSelect [uploader]="uploader" />
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <button class="btn btn-sm btn-primary" type="submit" [disabled]="!form.form.valid"><i class="fa fa-floppy-o"></i> Save</button>
+          <button class="btn btn-sm btn-warning" (click)="cancelEditing()"><i class="fa fa-times"></i> Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<div class="card" *ngIf="!isEditing && isAdd">
   <h4 class="card-header">Add new cat</h4>
   <div class="card-block">
-    <form class="form-inline" [formGroup]="addCatForm" (ngSubmit)="addCat()" style="text-align:center">
-      <div class="form-group">
-          <input class="form-control" type="text" name="name" formControlName="name" placeholder="Name">
-      </div>
-      <div class="form-group">
-        <input class="form-control" type="number" name="age" formControlName="age" placeholder="Age" min="0">
-      </div>
-      <div class="form-group">
-        <input class="form-control" type="number" name="weight" formControlName="weight" placeholder="Weight" step="any" min="0">
-      </div>
-      <button class="btn btn-primary" type="submit" [disabled]="!addCatForm.valid"><i class="fa fa-floppy-o"></i> Add</button>
+    <form [formGroup]="addCatForm" (ngSubmit)="addCat()" style="text-align:center">
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label for="name" class="col-xs-4">Name</label>
+            <div class="col-xs-8">
+              <input class="form-control" type="text" name="name" formControlName="name" placeholder="Name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="age" class="col-xs-4">Age</label>
+            <div class="col-xs-8">
+              <input class="form-control" type="number" name="age" formControlName="age" placeholder="Age" min="0">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="weight" class="col-xs-4">Weight</label>
+            <div class="col-xs-8">
+              <input class="form-control" type="number" name="weight" formControlName="weight" placeholder="Weight" step="any" min="0">
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="form-group">
+            <img class="img-responsive img-thumbnail"  width="200px" src="/api/file/{{fileName}}" *ngIf="fileName">
+            <img width="200px" class="img-responsive img-thumbnail" src="assets/images/cat_default.jpg" *ngIf="!fileName">
+          </div>
+          <div class="form-group">
+            <label for="imageCat" class="control-label col-xs-2">Image</label>
+            <div class="col-xs-10">
+              <input type="file" class="form-control" name="imageCat" ng2FileSelect [uploader]="uploader" />
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <button class="btn btn-primary" type="submit" [disabled]="!addCatForm.valid"><i class="fa fa-floppy-o"></i> Add</button>
+          <button class="btn btn-warning" (click)="cancelAdd()"><i class="fa fa-times"></i> Cancel</button>
+        </div>
     </form>
   </div>
 </div>

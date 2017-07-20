@@ -1,20 +1,27 @@
 import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
+
 import config from './config/config';
 import CatCtrl from './controllers/cat';
 import UserCtrl from './controllers/user';
+import FileCtrl from './controllers/file';
 import Cat from './models/cat';
 import User from './models/user';
 
 export default function setRoutes(app) {
   const routeNoSecure = express.Router();
   const routeSecure = express.Router();
+  //const upload = multer({ dest: config.uploadDirectory })
 
   const catCtrl = new CatCtrl();
   const userCtrl = new UserCtrl();
+  const fileCtrl = new FileCtrl();
 
   routeSecure.use(validateJWT);
 
+// Files
+  routeSecure.route('/upload').post(fileCtrl.upload);
+  routeNoSecure.route('/file/:file').get(fileCtrl.getFile);
 // Cats
   routeSecure.route('/cats').get(catCtrl.getAll);
   routeSecure.route('/cats/:page/:limit/:sort').get(catCtrl.list);

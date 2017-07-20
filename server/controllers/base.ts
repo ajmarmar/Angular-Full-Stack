@@ -32,13 +32,13 @@ abstract class BaseCtrl {
     obj.save((err, item) => {
       // 11000 is the code for duplicate key error
       if (err && err.code === 11000) {
-        res.sendStatus(400);
+        res.sendStatus(400).json({code: 400, message: 'Duplicate Key to insert model ' + this.model.modelName});
       }
       if (err) {
         console.error(err);
         res.status(500).json({code: 500, message: 'Error to insert model ' + this.model.modelName});
       } else {
-        res.status(200).json(item);
+        res.json(item);
       }
     });
   };
@@ -62,7 +62,7 @@ abstract class BaseCtrl {
         console.error(err);
         res.status(500).json({code: 500, message: 'Error to update model ' + this.model.modelName});
       } else {
-        res.status(200).json({code: 200, message: 'Update success'});
+        res.json({code: 200, message: 'Update success'});
       }
     });
   };
@@ -74,7 +74,7 @@ abstract class BaseCtrl {
         console.error(err);
         res.status(500).json({code: 500, message: 'Error to delete model ' + this.model.modelName});
       } else {
-        res.status(200).json({code: 200, message: 'Delete success'});
+        res.json({code: 200, message: 'Delete success'});
       }
     });
   };

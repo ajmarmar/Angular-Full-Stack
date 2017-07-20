@@ -7,7 +7,6 @@ import * as path from 'path';
 import * as compress from 'compression';
 import * as cors from 'cors'
 import * as helmet from 'helmet';
-import * as multer from 'multer';
 import * as serveStatic from 'serve-static';
 import * as util from 'util';
 import * as Promise from 'bluebird';
@@ -16,8 +15,6 @@ import config from './config/config';
 
 const app = express();
 //dotenv.load({ path: '.env' });
-
-const upload = multer({ dest: config.uploadDirectory })
 app.set('port', config.port);
 
 //http://expressjs.com/es/guide/migrating-4.html

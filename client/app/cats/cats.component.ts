@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Headers, ResponseContentType } from '@angular/http';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { FileUploader } from 'ng2-file-upload';
 
 import { CatService } from '../services/cat.service';
 import { ToastComponent } from '../shared/toast/toast.component';
@@ -11,11 +12,14 @@ import { ToastComponent } from '../shared/toast/toast.component';
   styleUrls: ['./cats.component.scss']
 })
 export class CatsComponent implements OnInit {
+  public uploader: FileUploader;
+  private fileName: string;
 
-  cat = {};
+  cat = {image: ''};
   cats = [];
   isLoading = true;
   isEditing = false;
+  isAdd = false;
 
   addCatForm: FormGroup;
   name = new FormControl('', Validators.required);
@@ -25,7 +29,23 @@ export class CatsComponent implements OnInit {
   constructor(private catService: CatService,
               private formBuilder: FormBuilder,
               private http: Http,
-              public toast: ToastComponent) { }
+              public toast: ToastComponent) {
+    const token = localStorage.getItem('token');
+    this.uploader = new FileUploader({url:'/api/upload', autoUpload: true, authToken: `Bearer ${token}`});
+    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers:any)=>  {
+        if (status !== 200) {
+          this.toast.setMessage('item deleted successfully.', 'error');
+        } else {
+          const res = JSON.parse(response);
+          if (this.isEditing) {
+            this.cat.image=res.fileName || '';
+          }
+          this.fileName = res.fileName || '';
+
+
+        }
+    };
+  }
 
   ngOnInit() {
     this.getCats();
@@ -34,6 +54,13 @@ export class CatsComponent implements OnInit {
       age: this.age,
       weight: this.weight
     });
+  }
+
+  enableAdd(){
+    this.isAdd=true;
+  }
+  cancelAdd(){
+    this.isAdd=false;
   }
 
   getCats() {
@@ -45,11 +72,16 @@ export class CatsComponent implements OnInit {
   }
 
   addCat() {
-    this.catService.addCat(this.addCatForm.value).subscribe(
+    this.uploader.uploadAll();
+    const cat = this.addCatForm.value;
+    cat.image = this.fileName;
+    this.catService.addCat(cat).subscribe(
       res => {
         const newCat = res.json();
         this.cats.push(newCat);
         this.addCatForm.reset();
+        this.fileName = '';
+        this.isAdd=false;
         this.toast.setMessage('item added successfully.', 'success');
       },
       error => console.log(error)
@@ -59,11 +91,12 @@ export class CatsComponent implements OnInit {
   enableEditing(cat) {
     this.isEditing = true;
     this.cat = cat;
+    console.log(this.cat);
   }
 
   cancelEditing() {
     this.isEditing = false;
-    this.cat = {};
+    this.cat = {image: ''};;
     this.toast.setMessage('item editing cancelled.', 'warning');
     // reload the cats to reset the editing
     this.getCats();
@@ -91,6 +124,22 @@ export class CatsComponent implements OnInit {
         error => console.log(error)
       );
     }
+  }
+
+  getImage(file){
+    console.log(file);
+
+    const token = localStorage.getItem('token');
+    this.http.get(`/api/file/${file}`,
+          { headers: new Headers({'Content-Type': 'application/x-www-form-urlencoded',
+                                  'Authorization': 'Bearer '+token
+                                }),
+            responseType: ResponseContentType.ArrayBuffer })
+     .map(res => res.arrayBuffer())
+     .subscribe(arrayBufferContent => {
+       console.log(arrayBufferContent);
+     });
+
   }
 
 }

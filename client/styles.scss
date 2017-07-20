@@ -8,3 +8,29 @@ body {
 .input-group {
   margin-bottom: 15px;
 }
+
+.imagen_container{
+	width: 100%;
+	overflow: hidden;
+}
+
+.cat_imagen{
+	/*width: 100%;*/
+	height: 150px;
+	margin: 0px auto;
+	display: block;
+}
+
+.imagen_relleno{
+	background: #ccc;
+  margin: 0px auto;
+	display: block;
+	height: 150px;
+}
+.cat-detail{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.cat-detail  .caption {
+  margin-left: 3px;
+}
