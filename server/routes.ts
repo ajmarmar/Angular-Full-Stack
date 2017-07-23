@@ -59,7 +59,7 @@ function validateJWT (req,res,next){
           if (err){
             res.status(403).json({code: 403, message: 'Invalid Token'});
           }else{
-            req.decode=decode;
+            req.decode = decode;
             next();
           }
         });
