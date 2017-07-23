@@ -17,7 +17,7 @@
 					<img src="/api/file/{{cat.image}}" class="cat_imagen"/>
 				</div>
 				<div *ngIf="!cat.image" class="imagen_container">
-					<img class="cat_imagen" src="/assets/images/cat_default.jpg"/>
+					<img class="cat_imagen" src="/assets/images/cat_default.png"/>
 				</div>
 				<div class="caption">
 					<h3>{{cat.name}}</h3>
@@ -57,7 +57,7 @@
         <div class="col-lg-6">
           <div class="form-group">
             <img class="img-responsive img-thumbnail"  width="200px" src="/api/file/{{cat.image}}" *ngIf="cat.image">
-            <img width="200px" class="img-responsive img-thumbnail" src="assets/images/cat_default.jpg" *ngIf="!cat.image">
+            <img width="200px" class="img-responsive img-thumbnail" src="assets/images/cat_default.png" *ngIf="!cat.image">
           </div>
           <div class="form-group">
             <label for="imageCatEdit" class="control-label col-xs-2">Image</label>
@@ -101,7 +101,7 @@
         <div class="col-lg-6">
           <div class="form-group">
             <img class="img-responsive img-thumbnail"  width="200px" src="/api/file/{{fileName}}" *ngIf="fileName">
-            <img width="200px" class="img-responsive img-thumbnail" src="assets/images/cat_default.jpg" *ngIf="!fileName">
+            <img width="200px" class="img-responsive img-thumbnail" src="assets/images/cat_default.png" *ngIf="!fileName">
           </div>
           <div class="form-group">
             <label for="imageCat" class="control-label col-xs-2">Image</label>
