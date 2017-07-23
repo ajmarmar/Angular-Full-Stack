@@ -9,16 +9,16 @@ export class SocketService {
   private url = 'http://localhost:3000';
   private socket;
 
-  sendMessage(message){
+  sendMessage(message) {
     this.socket.emit('add-message', message);
   }
 
-  getId(){
+  getId() {
     return this.socket.id;
   }
 
   getMessages() {
-    let observable = new Observable(observer => {
+    const observable = new Observable(observer => {
       this.socket = io(this.url);
       console.log(this.socket);
       this.socket.on('message', (data) => {

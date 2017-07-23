@@ -14,16 +14,14 @@ export default class CatCtrl extends BaseCtrl {
         res.status(500).json({code: 500, message: 'Error to delete model ' + this.model.modelName});
       } else {
         if (catDeleted.image) {
-          const pathFile = path.join(__dirname, '../../../'+ config.uploadDirectory) + catDeleted.image;
-          fs.stat(pathFile, function (err, stats) {
-             console.log(stats);//here we got all information of file in stats variable
-
-             if (err) {
-                 return console.error(err);
+          const pathFile = path.join(__dirname, '../../../' + config.uploadDirectory) + catDeleted.image;
+          fs.stat(pathFile, function (errStat, stats) {
+             if (errStat) {
+                 return console.error(errStat);
              }
 
-             fs.unlink(pathFile,function(err){
-                  if(err) return console.log(err);
+             fs.unlink(pathFile, function(errUnLink) {
+                  if (errUnLink) {return console.log(errUnLink)};
                   console.log('file deleted successfully');
              });
           });

@@ -14,13 +14,12 @@ import { Cat } from '../models/cat';
   templateUrl: './cats.component.html',
   styleUrls: ['./cats.component.scss']
 })
-export class CatsComponent implements OnInit {
+export class CatsComponent implements OnInit, OnDestroy {
   public uploader: FileUploader;
   private fileName: string;
   private connection;
 
-  //cat = {image: ''};
-  cat: Cat =  new Cat('','',0,0,'');
+  cat: Cat =  new Cat('', '', 0, 0, '');
   cats = [];
   isLoading = true;
   isEditing = false;
@@ -38,14 +37,14 @@ export class CatsComponent implements OnInit {
               private toastrService: ToastrService ) {
 
     const token = localStorage.getItem('token');
-    this.uploader = new FileUploader({url:'/api/upload', autoUpload: true, authToken: `Bearer ${token}`});
-    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers:any)=>  {
+    this.uploader = new FileUploader( { url: '/api/upload', autoUpload: true, authToken: `Bearer ${token}` } );
+    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) =>  {
         if (status !== 200) {
           this.toastrService.error('There was an error uploading the image');
         } else {
           const res = JSON.parse(response);
           if (this.isEditing) {
-            this.cat.image=res.fileName || '';
+            this.cat.image = res.fileName || '';
           }
           this.fileName = res.fileName || '';
         }
@@ -62,7 +61,7 @@ export class CatsComponent implements OnInit {
     this.connection = this.socketService.getMessages().subscribe(message => {
       console.log(message);
          const msg = <MessageSocket>message;
-         if (msg.emitedBy != this.socketService.getId()) {
+         if (msg.emitedBy !== this.socketService.getId()) {
            this.toastrService.success(msg.message, 'Notification');
          }
     });
@@ -72,11 +71,11 @@ export class CatsComponent implements OnInit {
       this.connection.unsubscribe();
   }
 
-  enableAdd(){
-    this.isAdd=true;
+  enableAdd() {
+    this.isAdd = true;
   }
-  cancelAdd(){
-    this.isAdd=false;
+  cancelAdd() {
+    this.isAdd = false;
   }
 
   getCats() {
@@ -97,7 +96,7 @@ export class CatsComponent implements OnInit {
         this.cats.push(newCat);
         this.addCatForm.reset();
         this.fileName = '';
-        this.isAdd=false;
+        this.isAdd = false;
         this.toastrService.success('item added successfully.');
         this.socketService.sendMessage('An item was added');
       },
@@ -112,8 +111,7 @@ export class CatsComponent implements OnInit {
 
   cancelEditing() {
     this.isEditing = false;
-    //this.cat = {image: ''};
-    this.cat = new Cat('','',0,0,'');
+    this.cat = new Cat('', '', 0, 0, '');
     this.toastrService.warning('item editing cancelled.');
     // reload the cats to reset the editing
     this.getCats();
@@ -133,7 +131,7 @@ export class CatsComponent implements OnInit {
 
   deleteCat(cat) {
     if (window.confirm('Are you sure you want to permanently delete this item?')) {
-      this.catService.deleteCat(cat).subscribe(
+      this.catService.deleteCat(cat).subscribe (
         res => {
           const pos = this.cats.map(elem => elem._id).indexOf(cat._id);
           this.cats.splice(pos, 1);
@@ -145,11 +143,11 @@ export class CatsComponent implements OnInit {
     }
   }
 
-  getImage(file){
+  getImage(file) {
     const token = localStorage.getItem('token');
     this.http.get(`/api/file/${file}`,
           { headers: new Headers({'Content-Type': 'application/x-www-form-urlencoded',
-                                  'Authorization': 'Bearer '+token
+                                  'Authorization': 'Bearer ' + token
                                 }),
             responseType: ResponseContentType.ArrayBuffer })
      .map(res => res.arrayBuffer())

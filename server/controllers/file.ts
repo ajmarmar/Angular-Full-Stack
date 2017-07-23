@@ -11,8 +11,8 @@ export default class FileCtrl {
           cb(null, config.uploadDirectory);
       },
       filename: function (req, file, cb) {
-          var datetimestamp = Date.now();
-          cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length -1]);
+          const datetimestamp = Date.now();
+          cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1]);
       }
   });
 
@@ -20,15 +20,15 @@ export default class FileCtrl {
                           limits: { fileSize: config.maxFileSize }}).single('file');
 
   getFile = (req, res) => {
-    console.log(req.params.file);
-    const pathFile = path.join(__dirname, '../../../'+ config.uploadDirectory) + req.params.file;
-    console.log(pathFile);
+    // console.log(req.params.file);
+    const pathFile = path.join(__dirname, '../../../' + config.uploadDirectory) + req.params.file;
+    // console.log(pathFile);
     res.sendFile(pathFile);
   }
 
   upload = (req, res) => {
     this.uploadMulter(req, res, function(err){
-        if(err){
+        if (err) {
           res.status(400).json({code: 400, message: err});
         } else {
           res.json({fileName: req.file.filename});
