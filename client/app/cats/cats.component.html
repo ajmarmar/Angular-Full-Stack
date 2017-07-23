@@ -1,7 +1,5 @@
 <app-loading [condition]="isLoading"></app-loading>
 
-<app-toast [message]="toast.message"></app-toast>
-
 <div class="card" *ngIf="!isLoading">
   <h4 class="card-header">Current cats ({{cats.length}})
     <button class="btn btn-sm btn-warning" (click)="enableAdd()" *ngIf="!isAdd && !isEditing"><i class="fa fa-plus-square-o"></i> Add</button></h4>

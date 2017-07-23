@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastComponent } from '../shared/toast/toast.component';
+import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 
@@ -14,7 +14,7 @@ export class AccountComponent implements OnInit {
   isLoading = true;
 
   constructor(private auth: AuthService,
-              public toast: ToastComponent,
+              public toast: ToastrService,
               private userService: UserService) { }
 
   ngOnInit() {
@@ -31,7 +31,7 @@ export class AccountComponent implements OnInit {
 
   save(user) {
     this.userService.editUser(user).subscribe(
-      res => this.toast.setMessage('account settings saved!', 'success'),
+      res => this.toast.success('account settings saved!'),
       error => console.log(error)
     );
   }

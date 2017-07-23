@@ -1,4 +1,8 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
+import { FileSelectDirective, FileDropDirective } from 'ng2-file-upload';
 
 import { RoutingModule } from './routing.module';
 import { SharedModule } from './shared/shared.module';
@@ -16,7 +20,7 @@ import { LogoutComponent } from './logout/logout.component';
 import { AccountComponent } from './account/account.component';
 import { AdminComponent } from './admin/admin.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { FileSelectDirective, FileDropDirective } from 'ng2-file-upload';
+import { SocketService } from './services/socket.service';
 
 @NgModule({
   declarations: [
@@ -33,14 +37,18 @@ import { FileSelectDirective, FileDropDirective } from 'ng2-file-upload';
   ],
   imports: [
     RoutingModule,
-    SharedModule
+    SharedModule,
+    CommonModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     AuthService,
     AuthGuardLogin,
     AuthGuardAdmin,
     CatService,
-    UserService
+    UserService,
+    SocketService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

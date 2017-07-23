@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Http, Headers, ResponseContentType } from '@angular/http';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { FileUploader } from 'ng2-file-upload';
-
+import { ToastrService } from 'ngx-toastr';
 import { CatService } from '../services/cat.service';
-import { ToastComponent } from '../shared/toast/toast.component';
+import { SocketService } from '../services/socket.service';
+import { MessageSocket } from '../models/messageSocket';
+
+import { Cat } from '../models/cat';
 
 @Component({
   selector: 'app-cats',
@@ -14,8 +17,10 @@ import { ToastComponent } from '../shared/toast/toast.component';
 export class CatsComponent implements OnInit {
   public uploader: FileUploader;
   private fileName: string;
+  private connection;
 
-  cat = {image: ''};
+  //cat = {image: ''};
+  cat: Cat =  new Cat('','',0,0,'');
   cats = [];
   isLoading = true;
   isEditing = false;
@@ -29,20 +34,20 @@ export class CatsComponent implements OnInit {
   constructor(private catService: CatService,
               private formBuilder: FormBuilder,
               private http: Http,
-              public toast: ToastComponent) {
+              private socketService: SocketService,
+              private toastrService: ToastrService ) {
+
     const token = localStorage.getItem('token');
     this.uploader = new FileUploader({url:'/api/upload', autoUpload: true, authToken: `Bearer ${token}`});
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers:any)=>  {
         if (status !== 200) {
-          this.toast.setMessage('item deleted successfully.', 'error');
+          this.toastrService.error('There was an error uploading the image');
         } else {
           const res = JSON.parse(response);
           if (this.isEditing) {
             this.cat.image=res.fileName || '';
           }
           this.fileName = res.fileName || '';
-
-
         }
     };
   }
@@ -54,6 +59,17 @@ export class CatsComponent implements OnInit {
       age: this.age,
       weight: this.weight
     });
+    this.connection = this.socketService.getMessages().subscribe(message => {
+      console.log(message);
+         const msg = <MessageSocket>message;
+         if (msg.emitedBy != this.socketService.getId()) {
+           this.toastrService.success(msg.message, 'Notification');
+         }
+    });
+  }
+
+  ngOnDestroy() {
+      this.connection.unsubscribe();
   }
 
   enableAdd(){
@@ -82,7 +98,8 @@ export class CatsComponent implements OnInit {
         this.addCatForm.reset();
         this.fileName = '';
         this.isAdd=false;
-        this.toast.setMessage('item added successfully.', 'success');
+        this.toastrService.success('item added successfully.');
+        this.socketService.sendMessage('An item was added');
       },
       error => console.log(error)
     );
@@ -91,13 +108,13 @@ export class CatsComponent implements OnInit {
   enableEditing(cat) {
     this.isEditing = true;
     this.cat = cat;
-    console.log(this.cat);
   }
 
   cancelEditing() {
     this.isEditing = false;
-    this.cat = {image: ''};;
-    this.toast.setMessage('item editing cancelled.', 'warning');
+    //this.cat = {image: ''};
+    this.cat = new Cat('','',0,0,'');
+    this.toastrService.warning('item editing cancelled.');
     // reload the cats to reset the editing
     this.getCats();
   }
@@ -107,7 +124,8 @@ export class CatsComponent implements OnInit {
       res => {
         this.isEditing = false;
         this.cat = cat;
-        this.toast.setMessage('item edited successfully.', 'success');
+        this.toastrService.success('item edited successfully.');
+        this.socketService.sendMessage('An item wad modified');
       },
       error => console.log(error)
     );
@@ -119,7 +137,8 @@ export class CatsComponent implements OnInit {
         res => {
           const pos = this.cats.map(elem => elem._id).indexOf(cat._id);
           this.cats.splice(pos, 1);
-          this.toast.setMessage('item deleted successfully.', 'success');
+          this.toastrService.success('item deleted successfully.');
+          this.socketService.sendMessage('An item was deleted');
         },
         error => console.log(error)
       );
@@ -127,8 +146,6 @@ export class CatsComponent implements OnInit {
   }
 
   getImage(file){
-    console.log(file);
-
     const token = localStorage.getItem('token');
     this.http.get(`/api/file/${file}`,
           { headers: new Headers({'Content-Type': 'application/x-www-form-urlencoded',
@@ -139,7 +156,5 @@ export class CatsComponent implements OnInit {
      .subscribe(arrayBufferContent => {
        console.log(arrayBufferContent);
      });
-
   }
-
 }

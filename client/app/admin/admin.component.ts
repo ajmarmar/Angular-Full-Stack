@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { ToastComponent } from '../shared/toast/toast.component';
+import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 
@@ -15,7 +15,7 @@ export class AdminComponent implements OnInit {
   isLoading = true;
 
   constructor(public auth: AuthService,
-              public toast: ToastComponent,
+              public toast: ToastrService,
               private userService: UserService) { }
 
   ngOnInit() {
@@ -32,7 +32,7 @@ export class AdminComponent implements OnInit {
 
   deleteUser(user) {
     this.userService.deleteUser(user).subscribe(
-      data => this.toast.setMessage('user deleted successfully.', 'success'),
+      data => this.toast.success('user deleted successfully.'),
       error => console.log(error),
       () => this.getUsers()
     );

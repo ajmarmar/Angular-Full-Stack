@@ -10,11 +10,11 @@ import * as helmet from 'helmet';
 import * as serveStatic from 'serve-static';
 import * as util from 'util';
 import * as Promise from 'bluebird';
+import setSocket from './socket';
 import setRoutes from './routes';
 import config from './config/config';
 
 const app = express();
-//dotenv.load({ path: '.env' });
 app.set('port', config.port);
 
 //http://expressjs.com/es/guide/migrating-4.html
@@ -49,9 +49,11 @@ db.once('open', () => {
     res.sendFile(path.join(__dirname, '../public/index.html'));
   });
 
-  app.listen(app.get('port'), () => {
+  const server = app.listen(app.get('port'), () => {
     console.log('Angular Full Stack listening on port ' + app.get('port'));
   });
+
+  setSocket(server);
 
 });
 
