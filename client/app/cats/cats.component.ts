@@ -59,7 +59,6 @@ export class CatsComponent implements OnInit, OnDestroy {
       weight: this.weight
     });
     this.connection = this.socketService.getMessages().subscribe(message => {
-      console.log(message);
          const msg = <MessageSocket>message;
          if (msg.emitedBy !== this.socketService.getId()) {
            this.toastrService.success(msg.message, 'Notification');
