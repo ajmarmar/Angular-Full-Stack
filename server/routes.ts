@@ -49,13 +49,13 @@ export default function setRoutes(app) {
   app.use('/api', routeSecure);
 }
 
-function validateJWT (req,res,next){
+function validateJWT (req,res,next) {
   //var token = req.body.token || req.headers.authorization;
   var bearerHeader = req.headers.authorization;
   if (typeof bearerHeader !== 'undefined') {
       var token = bearerHeader.split(" ")[1];
       if (token){
-        jwt.verify(token, config.jwtSecret, function(err, decode){
+        jwt.verify(token, config.jwtSecret, function(err, decode) {
           if (err){
             res.status(403).json({code: 403, message: 'Invalid Token'});
           }else{

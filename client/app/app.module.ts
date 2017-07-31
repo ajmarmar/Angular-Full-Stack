@@ -2,7 +2,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
-import { FileSelectDirective, FileDropDirective } from 'ng2-file-upload';
+import { FileUploadModule } from 'ng2-file-upload';
 
 import { RoutingModule } from './routing.module';
 import { SharedModule } from './shared/shared.module';
@@ -32,13 +32,13 @@ import { SocketService } from './services/socket.service';
     LogoutComponent,
     AccountComponent,
     AdminComponent,
-    NotFoundComponent,
-    FileSelectDirective
+    NotFoundComponent
   ],
   imports: [
     RoutingModule,
     SharedModule,
     CommonModule,
+    FileUploadModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot()
   ],
