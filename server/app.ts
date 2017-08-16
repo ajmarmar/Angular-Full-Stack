@@ -16,8 +16,8 @@ import config from './config/config';
 const app = express();
 app.set('port', config.port);
 
-//http://expressjs.com/es/guide/migrating-4.html
-//app.use('/', express.static(path.join(__dirname, '../public')));
+// http://expressjs.com/es/guide/migrating-4.html
+// app.use('/', express.static(path.join(__dirname, '../public')));
 app.use(serveStatic(path.join(__dirname, '../public')));
 
 app.use(bodyParser.json());
@@ -33,9 +33,9 @@ if (config.env === 'development') {
   app.use(morgan('short'));
 }
 
-mongoose.connect(config.mongo.connection,{useMongoClient:true});
+mongoose.connect(config.mongo.connection, {useMongoClient: true});
 const db = mongoose.connection;
-//(<any>mongoose).Promise = global.Promise;
+// (<any>mongoose).Promise = global.Promise;
 (<any>mongoose).Promise = Promise;
 
 db.on('error', console.error.bind(console, 'connection error:'));

@@ -11,7 +11,7 @@ import User from './models/user';
 export default function setRoutes(app) {
   const routeNoSecure = express.Router();
   const routeSecure = express.Router();
-  //const upload = multer({ dest: config.uploadDirectory })
+  // const upload = multer({ dest: config.uploadDirectory })
 
   const catCtrl = new CatCtrl();
   const userCtrl = new UserCtrl();
@@ -49,16 +49,16 @@ export default function setRoutes(app) {
   app.use('/api', routeSecure);
 }
 
-function validateJWT (req,res,next) {
-  //var token = req.body.token || req.headers.authorization;
-  var bearerHeader = req.headers.authorization;
+function validateJWT (req, res, next) {
+  // var token = req.body.token || req.headers.authorization;
+  const bearerHeader = req.headers.authorization;
   if (typeof bearerHeader !== 'undefined') {
-      var token = bearerHeader.split(" ")[1];
-      if (token){
+      const token = bearerHeader.split(" ")[1];
+      if (token) {
         jwt.verify(token, config.jwtSecret, function(err, decode) {
-          if (err){
+          if (err) {
             res.status(403).json({code: 403, message: 'Invalid Token'});
-          }else{
+          }else {
             req.decode = decode;
             next();
           }
